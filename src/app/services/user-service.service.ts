@@ -10,7 +10,7 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class UserServiceService {
 
-  BASE_URL:string = 'http://localhost:3000/'
+  BASE_URL:string = 'https://chat-poll-socketio-backend.onrender.com/'
 
 
   httpOptions = {
