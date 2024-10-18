@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms'; 
-
+import { jwtHttpInterceptor } from './interceptor/jwtdecode.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,6 +27,7 @@ import { PollingsComponent } from './pages/pollings/pollings.component';
     ExcludeCurrentUserPipe,
     GroupChatComponent,
     PollingsComponent,
+  
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,13 @@ import { PollingsComponent } from './pages/pollings/pollings.component';
     FormsModule 
     
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: jwtHttpInterceptor,
+      multi: true // Allows multiple interceptors
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

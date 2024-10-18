@@ -9,7 +9,8 @@ import { IPollData } from '../interfaces/Ichat';
 })
 export class ChatService {
   private _socket: Socket;
-  private _baseUrl ='https://chat-poll-socketio-backend.onrender.com/'
+  // private _baseUrl ='https://chat-poll-socketio-backend.onrender.com/'
+  private _baseUrl ='http://localhost:3000/'
 
   constructor(private http: HttpClient) { 
     this._socket = io(this._baseUrl, {});

@@ -49,26 +49,25 @@ export class ChatComponent implements OnInit, OnDestroy, OnChanges {
     this.loadClients();
   }
 
+  
   loadClients(): void {
-
     this.service.getUsers().subscribe({
-
       next: (res) => {
         console.log('res is ', res);
-
+  
         if (res && res.users) {
-          this.users = res.users.map((client: any) => ({
-            username: client.username,
-            email: client.email,
-            password: client.password,
-            userid: client._id,
-          }));
-
+          this.users = res.users
+            .map((client: any) => ({
+              username: client.username,
+              email: client.email,
+              password: client.password,
+              userid: client._id,
+              createdAt: client.createdAt // Assuming this field exists
+            }))
+  
           if (this.users.length > 0) {
             // Join all rooms
             this.joinAllRooms();
-
-
           }
         } else {
           console.error('No users found in response');
@@ -79,7 +78,7 @@ export class ChatComponent implements OnInit, OnDestroy, OnChanges {
       }
     });
   }
-
+  
 
   joinAllRooms(): void {
     if (this.senderId) {
@@ -132,24 +131,24 @@ export class ChatComponent implements OnInit, OnDestroy, OnChanges {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
     }
-
+  
     this.messageSubscription = this.chatService.receiveMessage().subscribe((message: any) => {
       console.log('received message is', message);
-
+  
       // Show typing indicator
       this.isTyping = true;
       this.cdr.detectChanges(); // Update the view to show typing
-
+  
       // Clear previous timeout
       if (this.typingTimeout) {
         clearTimeout(this.typingTimeout);
       }
-
+  
       // Set timeout to remove typing indicator after a delay (e.g., 2 seconds)
       this.typingTimeout = setTimeout(() => {
         this.isTyping = false;
         this.cdr.detectChanges(); // Update the view to remove typing
-
+  
         const formattedMessage = {
           message: message.message,
           receiverId: message.receiverId,
@@ -159,8 +158,7 @@ export class ChatComponent implements OnInit, OnDestroy, OnChanges {
           _id: message._id,
           roomId: message.roomId
         };
-
-
+  
         // Ensure the message is for the current room
         if (formattedMessage.roomId !== this.roomId) {
           // Increase unread count for the sender if the message is not for the current room
@@ -168,21 +166,20 @@ export class ChatComponent implements OnInit, OnDestroy, OnChanges {
           this.unreadMessageCounts.set(formattedMessage.senderId, { count: currentStatus.count + 1, isRead: false });
           return;
         }
-
+  
         // Mark message as read if it is for the current room
         if (formattedMessage.senderId === this.receiverId) {
           formattedMessage.isRead = true;
         }
-
+  
+        // Add the message to the list
         this.messages.push(formattedMessage);
+  
         this.cdr.detectChanges(); // Manually trigger change detection
-
       }, 2000);
-
     });
-
-
   }
+  
 
   getUnreadCountForUser(userId: string): number {
     return this.unreadMessageCounts.get(userId)?.count || 0;

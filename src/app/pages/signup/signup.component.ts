@@ -21,6 +21,7 @@ user: User = {
 
 signupForm!: FormGroup
 private signupSubscription: Subscription | null = null;
+isSubmitting = false; 
 
 
 constructor(private fb: FormBuilder, private service: UserServiceService, private router: Router) { }
@@ -68,6 +69,8 @@ sendSignupData(data: User) {
       if (res && res.message) {
 
         console.log('signup data from the server is',res);
+        this.isSubmitting = false;  // Re-enable button after success
+
         alert(res.message)
 
         this.signupForm.reset();
@@ -76,6 +79,7 @@ sendSignupData(data: User) {
     },
     error: (err: any) => {
       if (err && err.error.message) {
+        this.isSubmitting = false;  // Re-enable button after success
         alert('Error: ' + err.error.message)
         console.log('error',err.error.message);
         
@@ -94,6 +98,8 @@ onSubmit() {
     const signupdata = JSON.stringify(this.signupForm.value);
     localStorage.setItem('userMail', signupdata);
     this.sendSignupData(this.signupForm.value);
+    this.isSubmitting = true;  // Disable the button
+
   }
 
 }

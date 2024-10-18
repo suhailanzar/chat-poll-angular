@@ -67,7 +67,7 @@
             <!-- submit button -->
             <div class="flex justify-center	 mb-2">
 
-                <button type="submit" (click)="fullvalid()"
+                <button type="submit" [disabled]="isSubmitting" (click)="fullvalid()"
                     class="bg-blue-900 text-white w-28 px-4 py-2 rounded-lg hover:bg-blue-800">
                     SIGN UP</button>
             </div>
